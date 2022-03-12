@@ -1,0 +1,6 @@
+# The messages' configuration section, configures the forwarding of messages to the Discord server.
+messages:
+  # Whether to forward the messages to the Discord server.
+  forward: true
+  # The webhook to forward messages to, should be created in the Discord app
+  webhook: https://discordapp.com/api/webhooks/123456789/abcdefghijklmnopqrstuvwxyz
