@@ -6,11 +6,8 @@ import org.jetbrains.annotations.NotNull;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.IOException;
-import java.net.MalformedURLException;
-import java.net.URI;
 import java.net.URL;
 import java.net.URLConnection;
-import java.net.http.HttpRequest;
 
 /**
  * A really basic implementation of a Discord webhook.
@@ -37,7 +34,9 @@ public class DiscordWebhook {
         String username = sender.getName();
         String avatar = SkinLib.getAvatar(sender.getUniqueId());
 
-        sendMessage(username, avatar, message);
+        String sanitized = DiscordSanitizer.sanitize(message);
+
+        sendMessage(username, avatar, sanitized);
     }
 
     /**
