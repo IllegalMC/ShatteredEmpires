@@ -17,7 +17,7 @@ public class DiscordSanitizer {
      */
     @Contract(pure = true)
     public static @NotNull String sanitize(String s) {
-       return s.replaceAll("<@", "").replaceAll("<@&", "").replaceAll(">", "");
+       return s.replaceAll("<@", "").replaceAll("<@&", "").replaceAll(">", "").replaceAll("@everyone", "@\u200beveryone").replaceAll("@here", "@\u200bhere");
     }
 
 }

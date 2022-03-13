@@ -1,5 +1,6 @@
 package me.grplayer.lib.discord;
 
+import me.grplayer.ShatteredEmpires;
 import me.grplayer.lib.SkinLib;
 import org.bukkit.OfflinePlayer;
 import org.jetbrains.annotations.NotNull;
@@ -37,6 +38,15 @@ public class DiscordWebhook {
         String sanitized = DiscordSanitizer.sanitize(message);
 
         sendMessage(username, avatar, sanitized);
+    }
+
+    public void sendAlert(String alert) {
+        String json = "{\"username\":\"Alert\",\"avatar_url\":\""+ ShatteredEmpires.getInstance().getConfig().getConfigurationSection("messages").getString("alert-profile") +"\",\"content\":\"**" + alert + "**\"}";
+        try {
+            sendRequest(json);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     /**

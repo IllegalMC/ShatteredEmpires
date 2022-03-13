@@ -4,3 +4,8 @@ messages:
   forward: true
   # The webhook to forward messages to, should be created in the Discord app
   webhook: https://discordapp.com/api/webhooks/123456789/abcdefghijklmnopqrstuvwxyz
+  # The profile picture of the bot when sending alerts to Discord.
+  alert-profile: https://i.imgur.com/123456789.png
+
+# Is currently only used to download the language file.
+lang: en_us

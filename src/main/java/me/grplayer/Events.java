@@ -8,10 +8,14 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
+import org.bukkit.event.player.PlayerAdvancementDoneEvent;
+import org.bukkit.event.player.PlayerJoinEvent;
+import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.BrewerInventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -69,6 +73,36 @@ public class Events implements Listener {
         DiscordWebhook webhook = shatteredEmpires.getWebhook();
         // Let's not delay the chat message.
         Bukkit.getScheduler().runTaskAsynchronously(shatteredEmpires, () -> webhook.sendMessage(event.getPlayer(), message));
+    }
+
+    @EventHandler
+    public void onJoin(PlayerJoinEvent event) {
+        if(event.getJoinMessage() == null) return;
+
+        ShatteredEmpires.getInstance().getWebhook().sendAlert(event.getJoinMessage().replace("§e", ""));
+    }
+
+    @EventHandler
+    public void onQuit(PlayerQuitEvent event) {
+        if(event.getQuitMessage() == null) return;
+
+        ShatteredEmpires.getInstance().getWebhook().sendAlert(event.getQuitMessage().replace("§e", ""));
+    }
+
+    @EventHandler
+    public void onDeath(PlayerDeathEvent event) {
+        if(event.getDeathMessage() == null) return;
+
+        ShatteredEmpires.getInstance().getWebhook().sendAlert(event.getDeathMessage().replace("§e", ""));
+    }
+
+    @EventHandler
+    public void onAdvancementGained(PlayerAdvancementDoneEvent event) {
+        if(event.getAdvancement().getKey().getKey().startsWith("recipes/")) return;
+
+        String advancementName = ShatteredEmpires.getInstance().getTranslationManager().getTranslation("advancements." + event.getAdvancement().getKey().getKey().replace("/", ".") + ".title");
+
+        ShatteredEmpires.getInstance().getWebhook().sendAlert(event.getPlayer().getName() + " has made the advancement [" + advancementName + "]");
     }
 
 }
