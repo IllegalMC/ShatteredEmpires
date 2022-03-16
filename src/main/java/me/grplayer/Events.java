@@ -1,23 +1,31 @@
 package me.grplayer;
 
+import me.grplayer.lib.corpses.CorpseManager;
 import me.grplayer.lib.discord.DiscordWebhook;
 import me.grplayer.lib.naj0jerk.BrewingRecipe;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
+import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.AsyncPlayerChatEvent;
 import org.bukkit.event.player.PlayerAdvancementDoneEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.BrewerInventory;
+import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+
+import java.util.List;
 
 public class Events implements Listener {
 
@@ -94,6 +102,43 @@ public class Events implements Listener {
         if(event.getDeathMessage() == null) return;
 
         ShatteredEmpires.getInstance().getWebhook().sendAlert(event.getDeathMessage().replace("§e", ""));
+    }
+
+    @EventHandler
+    public void onDeathCorpse(PlayerDeathEvent event) {
+        // Let's spawn a Corpse.
+        Player player = event.getEntity();
+        Location deathLocation = player.getLocation();
+        List<ItemStack> drops = event.getDrops();
+
+        CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
+        corpseManager.spawnCorpse(player.getUniqueId(), deathLocation, event.getDeathMessage(), drops);
+
+        event.getDrops().clear();
+    }
+
+    @EventHandler
+    public void onBlockbreak(BlockBreakEvent event) {
+        if(event.getBlock().getType() == Material.CHEST) {
+            // Let's attempt to remove a corpse.
+            CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
+            corpseManager.removeCorpse(event.getBlock().getLocation());
+        }
+    }
+
+    @EventHandler
+    public void onInventoryClose(InventoryCloseEvent event) {
+        Inventory inventory = event.getInventory();
+        if(inventory.getType() != InventoryType.CHEST) return;
+
+        if(inventory.getHolder() instanceof Chest) {
+            Chest chest = (Chest) inventory.getHolder();
+            if(chest.getBlock().getType() == Material.CHEST) {
+                // Let's attempt to remove a corpse.
+                CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
+                corpseManager.removeCorpse(chest.getLocation().getBlock().getLocation());
+            }
+        }
     }
 
     @EventHandler
