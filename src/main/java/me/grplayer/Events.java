@@ -105,6 +105,12 @@ public class Events implements Listener {
     }
 
     @EventHandler
+    public void onJoinCorpse(PlayerJoinEvent event) {
+        CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
+        corpseManager.spawnCorpsesOnJoin(event.getPlayer());
+    }
+
+    @EventHandler
     public void onDeathCorpse(PlayerDeathEvent event) {
         // Let's spawn a Corpse.
         Player player = event.getEntity();
