@@ -9,3 +9,5 @@ messages:
 
 # Is currently only used to download the language file.
 lang: en_us
+# The delay between the updates of a skin check. The delay is in seconds. We recommend to use a value between 60 and 300. The default is 60. Do not set it too low, as it will cause the bot to be rate limited. If you experience issues with the bot, try increasing this value.
+skin-update-interval: 60

@@ -46,7 +46,7 @@ public class CorpseManager {
         // Load skins
         this.skinGrabber = new SkinGrabber(this.shatteredEmpires);
 
-        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.shatteredEmpires, this.skinGrabber::updateSkinDatabase, 0, 20 * 30);
+        Bukkit.getScheduler().scheduleSyncRepeatingTask(this.shatteredEmpires, this.skinGrabber::updateSkinDatabase, 0, 20 * this.shatteredEmpires.getConfig().getLong("skin-update-interval"));
     }
 
     public void spawnCorpse(UUID player, @NotNull Location deathLocation, String deathMessage, List<ItemStack> drops) {
@@ -79,7 +79,7 @@ public class CorpseManager {
         // Now let's spawn a name tag with the death message
         Location nameTagLocation = deathLocation.clone();
         nameTagLocation.setY(nameTagLocation.getY() + 1);
-        ArmorStand nameTag = nameTagLocation.getWorld().spawn(deathLocation, ArmorStand.class);
+        ArmorStand nameTag = nameTagLocation.getWorld().spawn(nameTagLocation, ArmorStand.class);
         String nameTagText = deathLocation.distance(chestLocation) > 10 ? deathMessage + " | " + "Loot at: " + chestLocation.getBlockX() + " " + chestLocation.getBlockY() + " " + chestLocation.getBlockZ() : deathMessage;
         nameTag.setCustomName(nameTagText);
         nameTag.setCustomNameVisible(true);
