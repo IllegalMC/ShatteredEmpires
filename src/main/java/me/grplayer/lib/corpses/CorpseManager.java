@@ -36,7 +36,7 @@ public class CorpseManager {
         this.logger = shatteredEmpires.getLogger();
 
         // Load corpses
-        for(String key : config.getConfigurationSection("corpses").getKeys(false)) {
+        for(String key : this.config.getConfigurationSection("corpses").getKeys(false)) {
             shatteredEmpires.getLogger().info("Loading corpse: " + key);
             UUID uuid = UUID.fromString(key);
             Corpse corpse = Corpse.fromConfig(this.config, uuid, protocolManager);
