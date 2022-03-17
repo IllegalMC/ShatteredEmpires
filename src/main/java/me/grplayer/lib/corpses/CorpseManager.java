@@ -37,9 +37,10 @@ public class CorpseManager {
 
         // Load corpses
         for(String key : config.getConfigurationSection("corpses").getKeys(false)) {
+            shatteredEmpires.getLogger().info("Loading corpse: " + key);
             UUID uuid = UUID.fromString(key);
             Corpse corpse = Corpse.fromConfig(this.config, uuid, protocolManager);
-            if(corpse != null) corpses.add(corpse);
+            if(corpse != null) this.corpses.add(corpse);
         }
 
         // Load skins
@@ -97,7 +98,7 @@ public class CorpseManager {
         this.corpses.add(corpse);
     }
 
-    private Location findOptimalChestLocation(@NotNull Location deathLocation) {
+    private @NotNull Location findOptimalChestLocation(@NotNull Location deathLocation) {
         // Find the chest location
         Location chestLocation = deathLocation.clone();
         chestLocation.setX(chestLocation.getX() + 1);
