@@ -1,4 +1,6 @@
 # Shattered Empires Extensions
+[![Build Status](https://github.com/IllegalMC/ShatteredEmpires/actions/workflows/build.yml/badge.svg)](https://github.com/IllegalMC/ShatteredEmpires/actions/workflows/build.yml)
+
 The official plugin used on the Shattered Empires SMP (Season 2) server.
 Contains:
  - Potion of Foreboding - A potion that will give you permanent bad omen (a.k.a. "Foreboding").
