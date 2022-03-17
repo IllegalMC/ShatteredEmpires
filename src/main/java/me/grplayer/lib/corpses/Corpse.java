@@ -183,13 +183,17 @@ public class Corpse {
     }
 
     public static @Nullable Corpse fromConfig(@NotNull Configuration config, UUID id, ProtocolManager protocolManager) {
-        ConfigurationSection section = config.getConfigurationSection("corpses");
+        ConfigurationSection corpses = config.getConfigurationSection("corpses");
+        if(corpses == null) return null;
+
+        ConfigurationSection section = corpses.getConfigurationSection(id.toString());
         if(section == null) return null;
 
         OfflinePlayer owner = section.getString("owner") == null ? null : org.bukkit.Bukkit.getOfflinePlayer(UUID.fromString(section.getString("owner")));
-        UUID nameTag = UUID.fromString(section.getConfigurationSection(id.toString()).getString("nameTag"));
-        Location deathLocation = section.getLocation("deathLocation", null);
-        Location chestLocation = section.getLocation("chestLocation", null);
+        UUID nameTag = UUID.fromString(section.getString("nameTag"));
+
+        Location deathLocation = parseLocationFromString(section.getString("deathLocation", null));
+        Location chestLocation = parseLocationFromString(section.getString( "chestLocation", null));
 
         if(deathLocation == null || chestLocation == null) return null;
 
@@ -198,6 +202,24 @@ public class Corpse {
         if(nameTagEntity == null) return null;
 
         return new Corpse(id, owner, nameTagEntity, deathLocation, chestLocation, protocolManager);
+    }
+
+    private static Location parseLocationFromString(String deathLocation) {
+        if (deathLocation == null) return null;
+
+        String data = deathLocation.split("Location")[1].replace("(", "").replace(")", "");
+        String worldName = data.split("world=")[1].split(",")[0].split("=")[1].replace("}", "");
+
+        World world = Bukkit.getWorld(worldName);
+        if (world == null) {
+            ShatteredEmpires.getInstance().getLogger().warning("Could not find world " + worldName + " for corpse " + deathLocation);
+            return null;
+        }
+
+        String[] coords = new String[]{data.split("x=")[1].split(",")[0], data.split("y=")[1].split(",")[0], data.split("z=")[1].split(",")[0]};
+        String[] pitchYaw = new String[]{data.split("pitch=")[1].split(",")[0], data.split("yaw=")[1].split(",")[0].replace("}", "")};
+
+        return new Location(world, Double.parseDouble(coords[0]), Double.parseDouble(coords[1]), Double.parseDouble(coords[2]), Float.parseFloat(pitchYaw[0]), Float.parseFloat(pitchYaw[1]));
     }
 
     private static @Nullable Entity getEntity(@NotNull World world, UUID uuid) {
