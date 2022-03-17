@@ -93,7 +93,7 @@ public class ShatteredEmpires extends JavaPlugin {
         this.corpseConfig = new YamlConfiguration();
         try {
             this.corpseConfig.load(corpseConfigFile);
-            this.corpseConfig.createSection("corpses");
+            if(this.corpseConfig.getConfigurationSection("corpses") == null) this.corpseConfig.createSection("corpses");
         } catch (IOException | InvalidConfigurationException e) {
             e.printStackTrace();
         }
