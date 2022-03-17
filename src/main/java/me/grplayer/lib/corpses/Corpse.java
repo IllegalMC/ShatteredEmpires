@@ -18,6 +18,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Collections;
+import java.util.List;
 import java.util.UUID;
 
 public class Corpse {
@@ -56,6 +57,10 @@ public class Corpse {
             world.getBlockAt(chestLocation).setType(Material.AIR);
         }
 
+        for(Player player : world.getPlayers()) {
+            removeForPlayer(player);
+        }
+
         config.getConfigurationSection("corpses").set(id.toString(), null);
     }
 
@@ -75,7 +80,7 @@ public class Corpse {
     protected void spawnForPlayer(Player player) {
         // UUID + Entity ID of the corpse
         UUID uuid = UUID.randomUUID();
-        int entityId = Math.toIntExact((long) (Math.random() * 1000));
+        int entityId = calculateEntityId(player);
 
         PacketContainer infoPacket = getInfoPacket(uuid, owner.getUniqueId());
         PacketContainer spawnPacket = getSpawnPacket(uuid, entityId, deathLocation);
@@ -88,6 +93,21 @@ public class Corpse {
         } catch (InvocationTargetException e) {
             throw new RuntimeException("Could not send packet of corpse for " + player.getName(), e);
         }
+    }
+
+    private void removeForPlayer(Player player) {
+        int entityId = calculateEntityId(player);
+        PacketContainer destroyPacket = getDestroyPacket(entityId);
+
+        try {
+            this.protocolManager.sendServerPacket(player, destroyPacket);
+        }catch (InvocationTargetException e) {
+            throw new RuntimeException("Could not send packet of corpse removal for " + player.getName(), e);
+        }
+    }
+
+    private int calculateEntityId(@NotNull Player player) {
+        return player.getEntityId() + player.getUniqueId().hashCode() + id.hashCode();
     }
 
     private @NotNull PacketContainer getInfoPacket(UUID uuid, UUID owner) {
@@ -141,6 +161,13 @@ public class Corpse {
         )));
 
         return hidePacket;
+    }
+
+    private @NotNull PacketContainer getDestroyPacket(int entityID) {
+        PacketContainer destroyPacket = new PacketContainer(PacketType.Play.Server.ENTITY_DESTROY);
+        destroyPacket.getIntLists().write(0, List.of(entityID));
+
+        return destroyPacket;
     }
 
     @Contract("_, _, _, _ -> new")
