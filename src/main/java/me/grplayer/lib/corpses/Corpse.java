@@ -12,7 +12,6 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.jetbrains.annotations.Contract;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -170,7 +169,6 @@ public class Corpse {
         return destroyPacket;
     }
 
-    @Contract("_, _, _, _ -> new")
     public static @NotNull Corpse createCorpse(OfflinePlayer owner, @NotNull Entity nameTag, Location deathLocation, Location chestLocation, ProtocolManager protocolManager) {
         return new Corpse(UUID.randomUUID(), owner, nameTag, deathLocation, chestLocation, protocolManager);
     }
