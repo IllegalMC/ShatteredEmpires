@@ -79,7 +79,7 @@ public class Corpse {
 
         PacketContainer infoPacket = getInfoPacket(uuid, owner.getUniqueId());
         PacketContainer spawnPacket = getSpawnPacket(uuid, entityId, deathLocation);
-        PacketContainer hidePacket = getHidePacket(owner.getUniqueId());
+        PacketContainer hidePacket = getHidePacket(uuid);
 
         try {
             this.protocolManager.sendServerPacket(player, infoPacket);
