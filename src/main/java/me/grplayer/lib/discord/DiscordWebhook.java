@@ -77,7 +77,6 @@ public class DiscordWebhook {
         connection.getOutputStream().write(json.getBytes());
 
         HttpsURLConnection httpsConnection = (HttpsURLConnection) connection;
-        httpsConnection.setHostnameVerifier((s, sslSession) -> true);
         httpsConnection.setSSLSocketFactory(HttpsURLConnection.getDefaultSSLSocketFactory());
         httpsConnection.connect();
 
