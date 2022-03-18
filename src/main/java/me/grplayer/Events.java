@@ -4,6 +4,7 @@ import me.grplayer.lib.corpses.CorpseManager;
 import me.grplayer.lib.discord.DiscordWebhook;
 import me.grplayer.lib.naj0jerk.BrewingRecipe;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.DoubleChest;
@@ -219,10 +220,11 @@ public class Events implements Listener {
 
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
+        if (event.getPlayer().getGameMode() == GameMode.SPECTATOR) return;
+
         Inventory inventory = event.getInventory();
         if (inventory.getType() != InventoryType.CHEST) return;
 
-        System.out.println(inventory.getHolder());
         if (inventory.getHolder() instanceof DoubleChest) {
             DoubleChest chest = (DoubleChest) inventory.getHolder();
             if (chest.getLocation().getBlock().getType() == Material.CHEST) {
