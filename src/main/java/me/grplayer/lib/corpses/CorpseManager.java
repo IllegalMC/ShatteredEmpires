@@ -6,6 +6,7 @@ import me.grplayer.lib.mineskin.SkinGrabber;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Chest;
 import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.ArmorStand;
@@ -101,18 +102,23 @@ public class CorpseManager {
     private @NotNull Location findOptimalChestLocation(@NotNull Location deathLocation) {
         // Find the chest location
         Location chestLocation = deathLocation.clone();
-        chestLocation.setX(chestLocation.getX() + 1);
+        chestLocation.setX(chestLocation.getBlockX() + 1);
 
-        // If there is no air, try it again.
-        while(chestLocation.getBlock().getType() != Material.AIR) {
+        for(int i = 0; i < 10; i++) {
             Location testLocation = chestLocation.clone();
-            testLocation.setX(testLocation.getX() + 1);
-            testLocation.setY(testLocation.getY() + 1);
             if(testLocation.getBlock().getType() == Material.AIR) {
-                chestLocation = testLocation;
-            }else {
-                chestLocation.setX(chestLocation.getX() + 1);
+                if(testLocation.getBlock().getRelative(BlockFace.NORTH).getType() == Material.AIR && testLocation.getBlock().getRelative(BlockFace.SOUTH).getType() == Material.AIR) {
+                    chestLocation = testLocation;
+                }
+                break;
             }
+
+            if(i == 9) {
+                chestLocation = deathLocation.clone();
+                chestLocation.setX(chestLocation.getBlockX() + 1);
+            }
+
+            chestLocation.setZ(chestLocation.getBlockZ() + 1);
         }
 
         return chestLocation.getBlock().getLocation();
