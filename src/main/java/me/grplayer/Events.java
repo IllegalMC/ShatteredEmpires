@@ -6,7 +6,7 @@ import me.grplayer.lib.naj0jerk.BrewingRecipe;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.Chest;
+import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
@@ -220,11 +220,12 @@ public class Events implements Listener {
     @EventHandler
     public void onInventoryClose(InventoryCloseEvent event) {
         Inventory inventory = event.getInventory();
-        if(inventory.getType() != InventoryType.CHEST) return;
+        if (inventory.getType() != InventoryType.CHEST) return;
 
-        if(inventory.getHolder() instanceof Chest) {
-            Chest chest = (Chest) inventory.getHolder();
-            if(chest.getBlock().getType() == Material.CHEST) {
+        System.out.println(inventory.getHolder());
+        if (inventory.getHolder() instanceof DoubleChest) {
+            DoubleChest chest = (DoubleChest) inventory.getHolder();
+            if (chest.getLocation().getBlock().getType() == Material.CHEST) {
                 // Let's attempt to remove a corpse.
                 CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
                 corpseManager.removeCorpse(chest.getLocation().getBlock().getLocation());

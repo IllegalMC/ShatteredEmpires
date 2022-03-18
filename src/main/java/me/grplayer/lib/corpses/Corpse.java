@@ -54,6 +54,7 @@ public class Corpse {
             }
 
             world.getBlockAt(chestLocation).setType(Material.AIR);
+            world.getBlockAt(chestLocation.subtract(1, 0, 0)).setType(Material.AIR);
         }
 
         for(Player player : world.getPlayers()) {

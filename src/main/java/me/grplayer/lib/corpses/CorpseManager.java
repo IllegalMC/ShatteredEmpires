@@ -13,6 +13,7 @@ import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
 import java.util.Collections;
@@ -59,7 +60,16 @@ public class CorpseManager {
         Location chestLocation = findOptimalChestLocation(deathLocation);
 
         if(chestLocation.getBlock().getType() == Material.AIR) {
-            chestLocation.getBlock().setType(Material.CHEST);
+            org.bukkit.block.data.type.Chest leftData = (org.bukkit.block.data.type.Chest) Material.CHEST.createBlockData();
+            org.bukkit.block.data.type.Chest rightData = (org.bukkit.block.data.type.Chest) Material.CHEST.createBlockData();
+
+            leftData.setType(org.bukkit.block.data.type.Chest.Type.LEFT);
+            rightData.setType(org.bukkit.block.data.type.Chest.Type.RIGHT);
+
+            Location leftLocation = chestLocation.clone().subtract(1, 0, 0);
+
+            leftLocation.getBlock().setBlockData(leftData);
+            chestLocation.getBlock().setBlockData(rightData);
         }
 
         if(chestLocation.getBlock().getState() instanceof Chest chest) {
@@ -124,9 +134,10 @@ public class CorpseManager {
         return chestLocation.getBlock().getLocation();
     }
 
-    public void removeCorpse(Location chestLocation) {
-        for(Corpse corpse : this.corpses) {
-            if(corpse.getChestLocation().toVector().equals(chestLocation.toVector())) {
+    public void removeCorpse(@NotNull Location chestLocation) {
+        Vector chestVector = chestLocation.toVector();
+        for (Corpse corpse : this.corpses) {
+            if (corpse.getChestLocation().toVector().equals(chestVector) || corpse.getChestLocation().toVector().subtract(new Vector(1, 0, 0)).equals(chestVector)) {
                 corpse.remove(this.config);
                 this.corpses.remove(corpse);
                 this.shatteredEmpires.saveConfigurations();
