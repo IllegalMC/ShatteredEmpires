@@ -5,7 +5,7 @@ The official plugin used on the Shattered Empires SMP (Season 2) server.
 Contains:
  - Potion of Foreboding - A potion that will give you permanent bad omen (a.k.a. "Foreboding").
  - Discord chat integration - The plugin will automatically send messages to Discord when you chat in-game.
- - Corpse spawning - The plugin will automatically spawn corpses for you when you die.
+ - ~~Corpse spawning - The plugin will automatically spawn corpses for you when you die.~~
 
 ## Credits
 This plugin is made possible by the following people:

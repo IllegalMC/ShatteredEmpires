@@ -14,5 +14,4 @@ repositories {
 dependencies {
     implementation 'org.jetbrains:annotations:23.0.0'
     compileOnly 'org.spigotmc:spigot-api:1.18.2-R0.1-SNAPSHOT'
-    compileOnly group: "com.comphenix.protocol", name: "ProtocolLib", version: "4.7.0";
 }

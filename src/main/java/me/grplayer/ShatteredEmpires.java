@@ -1,17 +1,11 @@
 package me.grplayer;
 
-import com.comphenix.protocol.ProtocolLibrary;
-import com.comphenix.protocol.ProtocolManager;
-import me.grplayer.lib.corpses.CorpseManager;
 import me.grplayer.lib.discord.DiscordWebhook;
 import me.grplayer.lib.minecraft.TranslationManager;
 import me.grplayer.lib.naj0jerk.BrewingRecipe;
 import org.bukkit.Color;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.InvalidConfigurationException;
-import org.bukkit.configuration.file.FileConfiguration;
-import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.potion.PotionData;
@@ -19,18 +13,11 @@ import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
-import java.io.File;
 import java.io.IOException;
 
 public class ShatteredEmpires extends JavaPlugin {
-
-    private ProtocolManager protocolManager;
-
-    private FileConfiguration corpseConfig;
-
     private DiscordWebhook webhook;
     private TranslationManager translationManager;
-    private CorpseManager corpseManager;
 
     @Override
     public void onEnable() {
@@ -52,11 +39,6 @@ public class ShatteredEmpires extends JavaPlugin {
         if(messages.getBoolean("forward")) {
             webhook = new DiscordWebhook(messages.getString("webhook"));
         }
-
-        // Then, we initialize the protocol manager & the corpse manager
-        this.protocolManager = ProtocolLibrary.getProtocolManager();
-        this.corpseManager = new CorpseManager(this);
-        this.corpseManager.spawnCorpses();
 
         // And finally, we register the brewing recipe & events
         new BrewingRecipe(Material.EMERALD, (inventory, item, ingridient) -> {
@@ -83,30 +65,10 @@ public class ShatteredEmpires extends JavaPlugin {
 
     private void setupConfigurations() {
         saveDefaultConfig();
-
-        File corpseConfigFile = new File(getDataFolder(), "corpses.yml");
-        if (!corpseConfigFile.exists()) {
-            corpseConfigFile.getParentFile().mkdirs();
-            saveResource("corpses.yml", false);
-        }
-
-        this.corpseConfig = new YamlConfiguration();
-        try {
-            this.corpseConfig.load(corpseConfigFile);
-            if(this.corpseConfig.getConfigurationSection("corpses") == null) this.corpseConfig.createSection("corpses");
-        } catch (IOException | InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
     }
 
     public void saveConfigurations() {
         saveDefaultConfig();
-
-        try {
-            corpseConfig.save(new File(getDataFolder(), "corpses.yml"));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override
@@ -130,17 +92,5 @@ public class ShatteredEmpires extends JavaPlugin {
 
     public TranslationManager getTranslationManager() {
         return translationManager;
-    }
-
-    public CorpseManager getCorpseManager() {
-        return corpseManager;
-    }
-
-    public ProtocolManager getProtocolManager() {
-        return protocolManager;
-    }
-
-    public FileConfiguration getCorpseConfiguration() {
-        return this.corpseConfig;
     }
 }

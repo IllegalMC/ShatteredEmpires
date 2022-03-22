@@ -1,28 +1,22 @@
 package me.grplayer;
 
-import me.grplayer.lib.corpses.CorpseManager;
 import me.grplayer.lib.discord.DiscordWebhook;
 import me.grplayer.lib.naj0jerk.BrewingRecipe;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
-import org.bukkit.block.DoubleChest;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
-import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.entity.EntityPickupItemEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.inventory.ClickType;
 import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
 import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.BrewerInventory;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
@@ -186,51 +180,6 @@ public class Events implements Listener {
                 bread.setAmount(event.getItem().getItemStack().getAmount());
 
                 p.getInventory().addItem(bread);
-            }
-        }
-    }
-
-    @EventHandler
-    public void onJoinCorpse(PlayerJoinEvent event) {
-        CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
-        corpseManager.spawnCorpsesOnJoin(event.getPlayer());
-    }
-
-    @EventHandler
-    public void onDeathCorpse(PlayerDeathEvent event) {
-        // Let's spawn a Corpse.
-        Player player = event.getEntity();
-        Location deathLocation = player.getLocation();
-        List<ItemStack> drops = event.getDrops();
-
-        CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
-        corpseManager.spawnCorpse(player.getUniqueId(), deathLocation, event.getDeathMessage(), drops);
-
-        event.getDrops().clear();
-    }
-
-    @EventHandler
-    public void onBlockbreak(BlockBreakEvent event) {
-        if(event.getBlock().getType() == Material.CHEST) {
-            // Let's attempt to remove a corpse.
-            CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
-            corpseManager.removeCorpse(event.getBlock().getLocation());
-        }
-    }
-
-    @EventHandler
-    public void onInventoryClose(InventoryCloseEvent event) {
-        if (event.getPlayer().getGameMode() == GameMode.SPECTATOR) return;
-
-        Inventory inventory = event.getInventory();
-        if (inventory.getType() != InventoryType.CHEST) return;
-
-        if (inventory.getHolder() instanceof DoubleChest) {
-            DoubleChest chest = (DoubleChest) inventory.getHolder();
-            if (chest.getLocation().getBlock().getType() == Material.CHEST) {
-                // Let's attempt to remove a corpse.
-                CorpseManager corpseManager = ShatteredEmpires.getInstance().getCorpseManager();
-                corpseManager.removeCorpse(chest.getLocation().getBlock().getLocation());
             }
         }
     }
